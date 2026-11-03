@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data Cleaning</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Data Cleaning & Preprocessing</p>
+</header>
+
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+<main>
+
+    <h2>Data Cleaning & Preprocessing</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Original Records</h3>
+            <p>{{ original_records }}</p>
+            <span>Before Cleaning</span>
+        </div>
+
+        <div class="card">
+            <h3>Cleaned Records</h3>
+            <p>{{ cleaned_records }}</p>
+            <span>After Cleaning</span>
+        </div>
+
+        <div class="card">
+            <h3>Duplicates Removed</h3>
+            <p>{{ duplicates_removed }}</p>
+            <span>Duplicate Records</span>
+        </div>
+
+        <div class="card">
+            <h3>Missing Values</h3>
+            <p>{{ missing_values_after }}</p>
+            <span>After Cleaning</span>
+        </div>
+
+        <div class="card">
+    <h3>Average Score</h3>
+    <p>{{ average_score }}</p>
+    <span>Overall Average</span>
+</div>
+
+<div class="card">
+    <h3>Grades</h3>
+    <p>{{ grades|length }}</p>
+    <span>Grade Categories</span>
+</div>
+
+<div class="card">
+    <h3>Attendance</h3>
+    <p>{{ attendance_categories|length }}</p>
+    <span>Attendance Categories</span>
+</div>
+
+    </div>
+
+
+    <section class="analysis-box">
+
+        <h2>Cleaning Process</h2>
+
+        <ul>
+            <li>Duplicate records are identified and removed.</li>
+            <li>Missing numeric values are replaced using median values.</li>
+            <li>Missing categorical values are replaced with "Unknown".</li>
+            <li>The cleaned dataset is used for further analysis.</li>
+        </ul>
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Data Quality Comparison</h2>
+
+        <p>
+            Missing values before cleaning:
+            <strong>{{ missing_values_before }}</strong>
+        </p>
+
+        <p>
+            Missing values after cleaning:
+            <strong>{{ missing_values_after }}</strong>
+        </p>
+
+        <p>
+            Duplicate records detected:
+            <strong>{{ duplicate_records }}</strong>
+        </p>
+
+    </section>
+
+</main>
+
+</body>
+</html>

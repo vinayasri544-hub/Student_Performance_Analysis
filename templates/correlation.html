@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Correlation Analysis</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+<header>
+
+    <h1>Student Performance Analysis</h1>
+
+    <p>Correlation Analysis</p>
+
+</header>
+
+
+<main>
+
+    <h2>Correlation Analysis</h2>
+
+
+    <!-- CORRELATION HEATMAP -->
+
+    <section class="analysis-box">
+
+        <h2>Correlation Heatmap</h2>
+
+        <div class="chart-container">
+
+            <canvas id="correlationChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- SCATTER PLOT -->
+
+    <section class="analysis-box">
+
+        <h2>Attendance vs Final Exam Marks</h2>
+
+        <div class="chart-container">
+
+            <canvas id="scatterChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- INTERPRETATION -->
+
+    <section class="analysis-box">
+
+        <h2>Interpretation</h2>
+
+        <ul>
+
+            <li>
+                Correlation values range from -1 to +1.
+            </li>
+
+            <li>
+                Positive correlation indicates that two variables
+                tend to increase together.
+            </li>
+
+            <li>
+                Negative correlation indicates an inverse relationship.
+            </li>
+
+            <li>
+                Values closer to zero indicate a weaker linear relationship.
+            </li>
+
+            <li>
+                The scatter plot shows the relationship between
+                attendance and final examination marks.
+            </li>
+
+        </ul>
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+fetch("/api/correlation")
+
+.then(response => response.json())
+
+.then(data => {
+
+    /* =========================
+       CORRELATION HEATMAP
+       ========================= */
+
+    const matrix = data.correlation_matrix;
+
+    const labels = Object.keys(matrix);
+
+    const heatmapData = [];
+
+    labels.forEach((row, i) => {
+
+        labels.forEach((column, j) => {
+
+            heatmapData.push({
+                x: j,
+                y: i,
+                r: Math.abs(matrix[row][column]) * 12
+            });
+
+        });
+
+    });
+
+
+    new Chart(
+
+        document.getElementById("correlationChart"),
+
+        {
+
+            type: "bubble",
+
+            data: {
+
+                datasets: [{
+
+                    label: "Correlation",
+
+                    data: heatmapData
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    x: {
+                        min: -1,
+                        max: labels.length
+                    },
+
+                    y: {
+                        min: -1,
+                        max: labels.length
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+    /* =========================
+       ATTENDANCE VS MARKS
+       ========================= */
+
+    const scatterPoints = data.scatter.map(item => ({
+
+        x: item.attendance,
+
+        y: item.marks
+
+    }));
+
+
+    new Chart(
+
+        document.getElementById("scatterChart"),
+
+        {
+
+            type: "scatter",
+
+            data: {
+
+                datasets: [{
+
+                    label: "Attendance vs Final Marks",
+
+                    data: scatterPoints
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Attendance (%)"
+
+                        }
+
+                    },
+
+                    y: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Final Exam Marks"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+});
+
+</script>
+
+
+</body>
+
+</html>

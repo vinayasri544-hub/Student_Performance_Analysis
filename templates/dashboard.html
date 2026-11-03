@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Performance Analysis</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}?v=2"></script>
+
+</head>
+
+<body>
+
+<!-- HAMBURGER MENU -->
+
+<div class="hamburger" id="menuToggle" onclick="toggleMenu()">
+
+    <span></span>
+    <span></span>
+    <span></span>
+
+</div>
+
+
+<!-- SIDE MENU -->
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+<!-- HEADER -->
+
+<header class="home-header">
+
+    <h1>Student Performance Analysis</h1>
+
+    <p>Big Data Analytics Project</p>
+
+</header>
+
+
+<!-- MAIN CONTENT -->
+
+<main class="home-main">
+
+    <section class="welcome-box">
+
+        <h2>Welcome to Student Performance Analysis</h2>
+
+        <p>
+            This project analyzes student academic and
+            behavioural data using Big Data Analytics and
+            Machine Learning techniques.
+        </p>
+
+    </section>
+
+
+    <section class="home-cards">
+
+    <div class="home-card">
+
+        <h3>Total Students</h3>
+
+        <p>{{ total_students }}</p>
+
+        <span>Students in Dataset</span>
+
+    </div>
+
+
+    <div class="home-card">
+
+        <h3>Average Marks</h3>
+
+        <p>{{ average_marks }}</p>
+
+        <span>Average Final Exam Marks</span>
+
+    </div>
+
+
+    <div class="home-card">
+
+        <h3>Pass Percentage</h3>
+
+        <p>{{ pass_percentage }}%</p>
+
+        <span>Students scoring 50 or above</span>
+
+    </div>
+
+
+    <div class="home-card">
+
+        <h3>At-Risk Students</h3>
+
+        <p>{{ at_risk_count }}</p>
+
+        <span>Students requiring attention</span>
+
+    </div>
+
+</section>
+
+
+    <section class="project-overview">
+
+        <h2>Project Overview</h2>
+
+        <p>
+            The system processes student performance data
+            and provides meaningful insights through
+            data cleaning, exploratory analysis, trend
+            analysis, correlation analysis, prediction,
+            risk detection and clustering.
+        </p>
+
+        <div class="info-grid">
+
+            <div>
+
+                <strong>Data Source</strong>
+
+                <p>Kaggle Dataset</p>
+
+            </div>
+
+
+            <div>
+
+                <strong>Technology</strong>
+
+                <p>Python + Flask + Pandas</p>
+
+            </div>
+
+
+            <div>
+
+                <strong>Machine Learning</strong>
+
+                <p>Random Forest + K-Means</p>
+
+            </div>
+
+
+            <div>
+
+                <strong>Visualization</strong>
+
+                <p>Chart.js</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="features-box">
+
+        <h2>Analytics Features</h2>
+
+        <ul>
+
+            <li>Data Ingestion</li>
+
+            <li>Data Cleaning & Preprocessing</li>
+
+            <li>Exploratory Data Analysis</li>
+
+            <li>Trend Analysis</li>
+
+            <li>Correlation Analysis</li>
+
+            <li>Performance Prediction</li>
+
+            <li>At-Risk Student Detection</li>
+
+            <li>K-Means Student Clustering</li>
+
+        </ul>
+
+    </section>
+
+<section class="analysis-box">
+
+    <h2>Performance Overview</h2>
+
+    <div class="chart-container">
+        <canvas id="performanceChart"></canvas>
+    </div>
+
+</section>
+
+
+<section class="analysis-box">
+
+    <h2>Average Marks by Subject</h2>
+
+    <div class="chart-container">
+        <canvas id="marksChart"></canvas>
+    </div>
+
+</section>
+
+</main>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+fetch("/api/analysis")
+    .then(response => response.json())
+    .then(data => {
+
+        // Performance Chart
+
+        new Chart(
+            document.getElementById("performanceChart"),
+            {
+                type: "bar",
+
+                data: {
+                    labels: data.performance_labels,
+
+                    datasets: [{
+                        label: "Students",
+                        data: data.performance_values
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            }
+        );
+
+
+        // Average Marks Chart
+
+        new Chart(
+            document.getElementById("marksChart"),
+            {
+                type: "bar",
+
+                data: {
+                    labels: data.marks_labels,
+
+                    datasets: [{
+                        label: "Average Marks",
+                        data: data.marks_values
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            }
+        );
+
+    });
+
+</script>
+
+</body>
+
+</html>

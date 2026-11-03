@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Knowledge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .score-card {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            text-align: center;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+
+        .score {
+            font-size: 30px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #1e293b;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HAMBURGER MENU -->
+<div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- SIDE MENU -->
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+<script>
+function toggleMenu() {
+    document.getElementById("sideMenu").classList.toggle("open");
+}
+</script>
+
+    <!-- Page heading -->
+    <h1>Coding Skills Analysis</h1>
+
+    <!-- Average score -->
+    <div class="score-card">
+        <h3>Average Coding Score</h3>
+        <div class="score">{{ average_score }} / 100</div>
+    </div>
+
+    <!-- Student coding scores -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Register Number</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Coding Score</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student["Student Reg No"] }}</td>
+                    <td>{{ student["Student Name"] }}</td>
+                    <td>{{ student["Department"] }}</td>
+                    <td>{{ student["coding_score"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+   
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById("sideMenu");
+        if (menu) {
+            menu.classList.toggle("open");
+        }
+    }
+</script>
+</body>
+</html>

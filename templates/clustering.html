@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Clustering</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Student Performance Analysis</h1>
+
+    <p>Student Clustering using K-Means</p>
+
+</header>
+
+
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+
+<main>
+
+    <h2>Student Clustering</h2>
+
+
+    <section class="analysis-box">
+
+        <h2>K-Means Clustering</h2>
+
+        <p>
+            K-Means clustering groups students based on
+            attendance, study hours, final examination marks
+            and CGPA.
+        </p>
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Cluster Distribution</h2>
+
+        <div class="info-grid">
+
+            <div>
+                <strong>Cluster 1</strong>
+                <p>{{ cluster_counts[0] }}</p>
+                <span>Students</span>
+            </div>
+
+            <div>
+                <strong>Cluster 2</strong>
+                <p>{{ cluster_counts[1] }}</p>
+                <span>Students</span>
+            </div>
+
+            <div>
+                <strong>Cluster 3</strong>
+                <p>{{ cluster_counts[2] }}</p>
+                <span>Students</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Clustering Factors</h2>
+
+        <ul>
+
+            <li>Attendance (%)</li>
+
+            <li>Study Hours/Day</li>
+
+            <li>Final Exam Marks</li>
+
+            <li>CGPA</li>
+
+        </ul>
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Purpose of Clustering</h2>
+
+        <ul>
+
+            <li>Identify groups of students with similar performance patterns.</li>
+
+            <li>Understand differences between student groups.</li>
+
+            <li>Support targeted academic assistance.</li>
+
+            <li>Help institutions analyse student performance patterns.</li>
+
+        </ul>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

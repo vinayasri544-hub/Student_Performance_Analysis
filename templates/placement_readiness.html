@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Readiness Score</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .readiness-container {
+            padding: 30px;
+        }
+
+        .readiness-container h1 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .readiness-subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .readiness-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .readiness-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #4f46e5;
+        }
+
+        .readiness-card h3 {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .readiness-card p {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+            color: #222;
+        }
+
+        .readiness-table-wrapper {
+            overflow-x: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .readiness-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .readiness-table th,
+        .readiness-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .readiness-table th {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .readiness-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .score-bar {
+            background: #e5e7eb;
+            height: 9px;
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 90px;
+            margin-top: 6px;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-improvement {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        @media (max-width: 600px) {
+            .readiness-container {
+                padding: 15px;
+            }
+        }
+    </style>
+    <script src="{{ url_for('static', filename='script.js') }}?v=3" defer></script>
+</head>
+
+<body>
+
+    <div class="hamburger" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+    <div class="readiness-container">
+
+        <h1>Placement Readiness Score</h1>
+        <p class="readiness-subtitle">
+            Student placement preparation overview and readiness assessment.
+        </p>
+
+        <div class="readiness-cards">
+
+            <div class="readiness-card">
+                <h3>Average Readiness Score</h3>
+                <p>{{ average_score }}%</p>
+            </div>
+
+            <div class="readiness-card">
+                <h3>Ready Students</h3>
+                <p>{{ ready_count }}</p>
+            </div>
+
+            <div class="readiness-card">
+                <h3>Needs Improvement</h3>
+                <p>{{ improvement_count }}</p>
+            </div>
+
+            <div class="readiness-card">
+                <h3>Total Students</h3>
+                <p>{{ students|length }}</p>
+            </div>
+
+        </div>
+
+        <div class="readiness-table-wrapper">
+
+            <h2>Student Readiness Details</h2>
+
+            <table class="readiness-table">
+                <thead>
+                    <tr>
+                        <th>Register Number</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th>Readiness Score</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student["Student Reg No"] }}</td>
+                        <td>{{ student["Student Name"] }}</td>
+                        <td>{{ student["Department"] }}</td>
+
+                        <td>
+                            <strong>{{ student["readiness_score"] }}%</strong>
+
+                        <div class="score-bar">
+                            <div class="score-fill"></div>
+                        </div>
+
+                        </td>
+
+                        <td>
+                            {% if student["readiness_status"] == "Ready" %}
+                                <span class="status status-ready">Ready</span>
+                            {% else %}
+                                <span class="status status-improvement">
+                                    Needs Improvement
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="5">No student records available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

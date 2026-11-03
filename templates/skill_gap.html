@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skill Gap Finder</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <style>
+        main {
+            padding: 25px;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .summary-card,
+        .analysis-box {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .summary-card {
+            border-left: 5px solid #315b96;
+        }
+
+        .summary-card h3 {
+            color: #555;
+            font-size: 15px;
+        }
+
+        .summary-card .number {
+            color: #243b64;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .analysis-box h2 {
+            color: #243b64;
+            margin-top: 0;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .skill-table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        .skill-table th,
+        .skill-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .skill-table th {
+            background: #243b64;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .skill-table tbody tr:nth-child(even) {
+            background: #f4f6fa;
+        }
+
+        .skill-table tbody tr:hover {
+            background: #eaf1ff;
+        }
+
+        .numeric {
+            text-align: center !important;
+        }
+
+        .weak-skill {
+            color: #b23b32;
+            font-weight: bold;
+        }
+
+        .good-skill {
+            color: #247442;
+            font-weight: bold;
+        }
+
+        .note {
+            padding: 14px;
+            background: #eef4ff;
+            border-radius: 8px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .empty-message {
+            padding: 20px;
+            background: #f4f6fa;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 800px) {
+            main {
+                padding: 15px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Student Career Advisor - Skill Gap Finder</p>
+</header>
+
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+<main>
+
+    <h2>Skill Gap Finder</h2>
+
+    <p>
+        Find each student's weakest skill and understand what to improve.
+    </p>
+
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <h3>Students Analysed</h3>
+            <p class="number">{{ total_students }}</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Target Score</h3>
+            <p class="number">70 / 100</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Skills Checked</h3>
+            <p class="number">3</p>
+            <p>Coding, Aptitude, Communication</p>
+        </div>
+
+    </div>
+
+
+    <section class="analysis-box">
+
+        <h2>How to Read This Page</h2>
+
+        <div class="note">
+            <strong>Simple explanation:</strong>
+            The target for each skill is 70. If a student's score is
+            below 70, the gap shows how many points they need to improve.
+            The weakest skill helps decide what to practise first.
+        </div>
+
+        <p>
+            Example: Coding Score = 45 means the student needs
+            25 more points to reach the target of 70.
+        </p>
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Student Skill Gap Table</h2>
+
+        {% if students %}
+
+        <div class="table-wrapper">
+
+            <table class="skill-table">
+
+                <thead>
+                    <tr>
+                        <th class="numeric">S.No.</th>
+                        <th>Register Number</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th class="numeric">Coding</th>
+                        <th class="numeric">Aptitude</th>
+                        <th class="numeric">Communication</th>
+                        <th class="numeric">Average</th>
+                        <th>Weakest Skill</th>
+                        <th>Recommended Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr>
+                        <td class="numeric">{{ loop.index }}</td>
+
+                        <td>{{ student["Student Reg No"] }}</td>
+
+                        <td>{{ student["Student Name"] }}</td>
+
+                        <td>{{ student["Department"] }}</td>
+
+                        <td class="numeric
+                            {% if student['Coding Score'] < 70 %}
+                                weak-skill
+                            {% else %}
+                                good-skill
+                            {% endif %}">
+                            {{ student["Coding Score"] }}
+                        </td>
+
+                        <td class="numeric
+                            {% if student['Aptitude Score'] < 70 %}
+                                weak-skill
+                            {% else %}
+                                good-skill
+                            {% endif %}">
+                            {{ student["Aptitude Score"] }}
+                        </td>
+
+                        <td class="numeric
+                            {% if student['Communication Score'] < 70 %}
+                                weak-skill
+                            {% else %}
+                                good-skill
+                            {% endif %}">
+                            {{ student["Communication Score"] }}
+                        </td>
+
+                        <td class="numeric">
+                            {{ student["Skill Average"] }}
+                        </td>
+
+                        <td>{{ student["Weakest Skill"] }}</td>
+
+                        <td>{{ student["Recommended Action"] }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-message">
+            No student skill data is available for analysis.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>What Should Students Do?</h2>
+
+        <ul>
+            <li><strong>Coding below 70:</strong> Practise programming problems.</li>
+            <li><strong>Aptitude below 70:</strong> Practise logical and quantitative reasoning.</li>
+            <li><strong>Communication below 70:</strong> Practise speaking and mock interviews.</li>
+        </ul>
+
+    </section>
+
+</main>
+
+</body>
+</html>

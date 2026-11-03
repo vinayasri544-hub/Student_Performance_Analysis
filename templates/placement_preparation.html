@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Preparation Analysis</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+            margin: 0;
+            color: #1e293b;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 10px 0 25px;
+        }
+
+        .score-card {
+            background: white;
+            padding: 25px;
+            margin: 20px auto 30px;
+            text-align: center;
+            max-width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .score {
+            font-size: 32px;
+            color: #2563eb;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .info {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .table-container {
+            max-width: 1100px;
+            margin: auto;
+            overflow-x: auto;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #1e293b;
+            color: white;
+        }
+
+        tbody tr:hover {
+            background: #eff6ff;
+        }
+
+        .score-value {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+
+.hamburger {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 42px;
+    height: 42px;
+    background: #111827;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 999;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.hamburger span {
+    display: block;
+    height: 3px;
+    background: white;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    box-sizing: border-box;
+    background: #111827;
+    padding: 20px 25px;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    box-shadow: 3px 0 10px #aaa;
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu h2 {
+    color: white;
+    margin: 10px 0 30px;
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px 5px;
+    border-bottom: 1px solid #374151;
+    font-weight: bold;
+}
+
+.side-menu a:hover {
+    background: #334155;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- Hamburger Menu -->
+<div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Sidebar Menu -->
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("sideMenu").classList.toggle("open");
+    }
+</script>
+
+    <h1>Placement Preparation Analysis</h1>
+
+    <div class="score-card">
+        <h3>Average Placement Preparation Score</h3>
+        <div class="score">{{ average_score }} / 100</div>
+    </div>
+
+    <p class="info">
+        This score combines aptitude, mock interview, resume, coding,
+        technical knowledge, skills, projects and internship experience.
+        It is an indicative preparation score, not a guarantee of placement.
+    </p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Register Number</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Preparation Score</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student["Student Reg No"] }}</td>
+                    <td>{{ student["Student Name"] }}</td>
+                    <td>{{ student["Department"] }}</td>
+                    <td class="score-value">
+                        {{ student["placement_preparation_score"] }} / 100
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+function toggleMenu() {
+    document.getElementById("sideMenu").classList.toggle("open");
+}
+</script>
+</body>
+</html>

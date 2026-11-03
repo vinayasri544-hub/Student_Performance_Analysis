@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Role Recommender</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <style>
+        main {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .summary-card,
+        .analysis-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            border-left: 5px solid #315b96;
+        }
+
+        .summary-card h3 {
+            color: #555;
+            font-size: 15px;
+        }
+
+        .summary-card .number {
+            color: #243b64;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .analysis-box h2 {
+            color: #243b64;
+            margin-top: 0;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .role-table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+
+        .role-table th,
+        .role-table td {
+            padding: 13px;
+            border: 1px solid #e0e5ed;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .role-table th {
+            background: #243b64;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .role-table tbody tr:nth-child(even) {
+            background: #f4f6fa;
+        }
+
+        .role-table tbody tr:hover {
+            background: #eaf1ff;
+        }
+
+        .numeric {
+            text-align: center !important;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #eaf1ff;
+            color: #243b64;
+            border-radius: 15px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .match-score {
+            font-weight: bold;
+            color: #247442;
+        }
+
+        .note {
+            background: #eef4ff;
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .empty-message {
+            background: #f4f6fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        @media (max-width: 800px) {
+            main {
+                padding: 15px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Student Career Advisor - Role Recommender</p>
+</header>
+
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+<main>
+
+    <h2>Role Recommender</h2>
+
+    <p>
+        Discover which career role best matches each student's current skills.
+    </p>
+
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <h3>Students Analysed</h3>
+            <p class="number">{{ total_students }}</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Career Roles</h3>
+            <p class="number">6</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Skills Considered</h3>
+            <p class="number">3</p>
+            <p>Coding, Aptitude, Communication</p>
+        </div>
+
+    </div>
+
+
+    <section class="analysis-box">
+
+        <h2>How It Works</h2>
+
+        <div class="note">
+            Each student's coding, aptitude and communication scores
+            are combined using predefined weights for four career roles.
+            The role with the highest calculated score is recommended.
+        </div>
+
+        <p>
+            <strong>Note:</strong> The match score is an estimated
+            skill-based suitability score, not a guarantee of selection.
+        </p>
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Recommended Career Roles</h2>
+
+        {% if students %}
+
+        <div class="table-wrapper">
+
+            <table class="role-table">
+
+                <thead>
+                    <tr>
+                        <th class="numeric">S.No.</th>
+                        <th>Register Number</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th class="numeric">Coding</th>
+                        <th class="numeric">Aptitude</th>
+                        <th class="numeric">Communication</th>
+                        <th>Recommended Role</th>
+                        <th class="numeric">Match Score</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr>
+                        <td class="numeric">{{ loop.index }}</td>
+
+                        <td>{{ student["Student Reg No"] }}</td>
+
+                        <td>{{ student["Student Name"] }}</td>
+
+                        <td>{{ student["Department"] }}</td>
+
+                        <td class="numeric">
+                            {{ student["Coding Score"] }}
+                        </td>
+
+                        <td class="numeric">
+                            {{ student["Aptitude Score"] }}
+                        </td>
+
+                        <td class="numeric">
+                            {{ student["Communication Score"] }}
+                        </td>
+
+                        <td>
+                            <span class="role-badge">
+                                {{ student["Recommended Role"] }}
+                            </span>
+                        </td>
+
+                        <td class="numeric match-score">
+                            {{ student["Role Match Score"] }}%
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-message">
+            No student records are available for role recommendation.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="analysis-box">
+
+        <h2>Available Career Roles</h2>
+
+        <ul>
+            <li><strong>Data Analyst:</strong> Work with data, reports and insights.</li>
+            <li><strong>Web Developer:</strong> Build and maintain websites and web applications.</li>
+            <li><strong>Software Tester:</strong> Test applications and identify defects.</li>
+            <li><strong>Software Engineer:</strong> Design and develop software systems.</li>
+        </ul>
+
+    </section>
+
+</main>
+
+</body>
+</html>

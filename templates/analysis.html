@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Performance Analysis</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Exploratory Data Analysis</p>
+</header>
+
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+<main>
+
+    <h2>Exploratory Data Analysis</h2>
+
+    <section class="analysis-box">
+
+        <h2>Performance Metrics</h2>
+
+        <div class="info-grid">
+
+            <div>
+                <strong>Average CGPA</strong>
+                <p>{{ average_cgpa }}</p>
+            </div>
+
+            <div>
+                <strong>Average Attendance</strong>
+                <p>{{ average_attendance }}%</p>
+            </div>
+
+            <div>
+                <strong>Average Study Hours</strong>
+                <p>{{ average_study_hours }} hrs/day</p>
+            </div>
+
+            <div>
+                <strong>Average Final Marks</strong>
+                <p>{{ average_final_marks }}</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="analysis-box">
+
+        <h2>Performance Level Distribution</h2>
+
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+
+    </section>
+
+    <section class="analysis-box">
+
+        <h2>Placement Status Distribution</h2>
+
+        <div class="chart-container">
+            <canvas id="placementChart"></canvas>
+        </div>
+
+    </section>
+
+    <section class="analysis-box">
+
+        <h2>Average Marks by Assessment</h2>
+
+        <div class="chart-container">
+            <canvas id="marksChart"></canvas>
+        </div>
+
+    </section>
+
+    <section class="analysis-box">
+
+    <h2>Gender-wise Performance</h2>
+
+    <div class="chart-container">
+        <canvas id="genderChart"></canvas>
+    </div>
+
+</section>
+
+</main>
+
+<script>
+
+fetch("/api/analysis")
+.then(response => response.json())
+.then(data => {
+
+    new Chart(document.getElementById("performanceChart"), {
+        type: "pie",
+
+        data: {
+            labels: data.performance_labels,
+
+            datasets: [{
+                label: "Students",
+                data: data.performance_values
+            }]
+        }
+    });
+
+
+    new Chart(document.getElementById("placementChart"), {
+        type: "doughnut",
+
+        data: {
+            labels: data.placement_labels,
+
+            datasets: [{
+                label: "Students",
+                data: data.placement_values
+            }]
+        }
+    });
+
+
+    new Chart(document.getElementById("marksChart"), {
+        type: "bar",
+
+        data: {
+            labels: data.marks_labels,
+
+            datasets: [{
+                label: "Average Score",
+                data: data.marks_values
+            }]
+        },
+
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("genderChart"), {
+
+    type: "bar",
+
+    data: {
+
+        labels: data.gender_labels,
+
+        datasets: [{
+            label: "Average Final Exam Marks",
+            data: data.gender_values
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        scales: {
+
+            y: {
+                beginAtZero: true
+            }
+
+        }
+
+    }
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

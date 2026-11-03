@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Student Report</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            margin: 0;
+            padding: 30px;
+            color: #24324a;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px #00000012;
+        }
+
+        h1 {
+            color: #243b64;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 0;
+        }
+
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd4e0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button, .download, .back {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #2459a9;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 15px;
+        }
+
+        button:hover, .download:hover, .back:hover {
+            opacity: 0.88;
+        }
+
+        .download {
+            background: #168653;
+            margin: 15px 0;
+        }
+
+        .back {
+            background: #53657d;
+        }
+
+        .details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .details th,
+        .details td {
+            padding: 12px;
+            border: 1px solid #dce2eb;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .details th {
+            width: 35%;
+            background: #eaf0fa;
+        }
+
+        .message {
+            padding: 14px;
+            background: #fff2d7;
+            border-radius: 6px;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .details th,
+            .details td {
+                padding: 8px;
+            }
+        }
+        
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Individual Student Report</h1>
+
+    <p>
+        Search using the student's name or registration number.
+        Type a few letters to see matching student names.
+    </p>
+
+    <form class="search-form"
+          action="{{ url_for('student_report') }}"
+          method="get">
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="studentSearch"
+                name="search"
+                list="studentSuggestions"
+                placeholder="Type student name or register number"
+                value="{{ search }}"
+                autocomplete="off"
+                required
+            >
+
+            <datalist id="studentSuggestions">
+                {% for name in student_names %}
+                    <option value="{{ name }}"></option>
+                {% endfor %}
+            </datalist>
+
+            <p class="hint">
+                Start typing a name to see suggestions.
+            </p>
+        </div>
+
+        <button type="submit">Search</button>
+    </form>
+
+    {% if search and not student %}
+        <p class="message">
+            No student found. Check the name or registration number and try again.
+        </p>
+    {% endif %}
+
+    {% if student %}
+
+        <h2>{{ student.get('Student Name', 'Student') }}</h2>
+
+        <button class="download" type="button" onclick="window.print()">
+            Print / Save Student Report as PDF
+        </button>
+
+        <table class="details">
+            <tbody>
+                {% for field, value in student.items() %}
+                    <tr>
+                        <th>{{ field }}</th>
+                        <td>
+                            {{ value if value is not none else 'Not Available' }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+
+    <p style="margin-top: 25px;">
+        <a class="back" href="{{ url_for('report') }}">
+            Back to Overall Report
+        </a>
+    </p>
+
+</div>
+</body>
+</html>

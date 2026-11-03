@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Marks vs Skills Gap</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <style>
+        /* Main page layout */
+        main {
+            padding: 25px;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .page-intro {
+            margin-bottom: 22px;
+        }
+
+        .page-intro h2 {
+            margin-bottom: 8px;
+        }
+
+        .page-intro p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Summary cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #315b96;
+        }
+
+        .summary-card h3 {
+            font-size: 15px;
+            color: #555;
+            margin: 0 0 12px;
+        }
+
+        .summary-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #243b64;
+            margin: 0;
+        }
+
+        /* Content panels */
+        .analysis-box {
+            background: white;
+            padding: 22px;
+            margin: 22px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .analysis-box h2 {
+            margin-top: 0;
+            color: #243b64;
+        }
+
+        .simple-note {
+            background: #eef4ff;
+            border-radius: 8px;
+            padding: 14px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        /* Table alignment */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .student-table {
+            width: 100%;
+            min-width: 750px;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 13px 14px;
+            border: 1px solid #e0e5ed;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .student-table th {
+            background: #243b64;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .student-table tbody tr:nth-child(even) {
+            background: #f5f7fb;
+        }
+
+        .student-table tbody tr:hover {
+            background: #eaf1ff;
+        }
+
+        .student-table td.numeric,
+        .student-table th.numeric {
+            text-align: center;
+        }
+
+        .gap-value {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 15px;
+            background: #fff0e8;
+            color: #a33b16;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .empty-message {
+            padding: 22px;
+            text-align: center;
+            background: #f5f7fb;
+            border-radius: 8px;
+            color: #555;
+        }
+
+        .recommendation-list li {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 800px) {
+            main {
+                padding: 15px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Academic Marks vs Coding Skills</p>
+</header>
+
+
+<!-- Sidebar menu: same navigation as other pages -->
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+
+<main>
+
+    <div class="page-intro">
+        <h2>Marks vs Skills Gap</h2>
+
+        <p>
+            Find students who score well in exams but need more coding practice.
+        </p>
+    </div>
+
+
+    <!-- Summary cards -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <h3>Students Identified</h3>
+            <p class="number">{{ total_students }}</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>High Exam Marks</h3>
+            <p class="number">75+</p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Low Coding Score</h3>
+            <p class="number">&lt; 50</p>
+        </div>
+
+    </div>
+
+
+    <!-- Simple explanation -->
+    <section class="analysis-box">
+
+        <h2>What does this mean?</h2>
+
+        <div class="simple-note">
+            <strong>Easy explanation:</strong>
+            A student may get high exam marks but have a low coding score.
+            This page helps us find those students so they can improve
+            their programming skills before placement interviews.
+        </div>
+
+        <p>
+            <strong>Rule used:</strong>
+            Final Exam Marks must be 75 or above, and Coding Score must
+            be below 50.
+        </p>
+
+    </section>
+
+
+    <!-- Student data table -->
+    <section class="analysis-box">
+
+        <h2>Students Who Need More Coding Practice</h2>
+
+        {% if students %}
+
+        <div class="table-wrapper">
+
+            <table class="student-table">
+
+                <thead>
+                    <tr>
+                        <th class="numeric">S.No.</th>
+                        <th>Register Number</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th class="numeric">Exam Marks</th>
+                        <th class="numeric">Coding Score</th>
+                        <th class="numeric">Marks-Skills Gap</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr>
+                        <td class="numeric">{{ loop.index }}</td>
+
+                        <td>{{ student["Student Reg No"] }}</td>
+
+                        <td>{{ student["Student Name"] }}</td>
+
+                        <td>{{ student["Department"] }}</td>
+
+                        <td class="numeric">
+                            {{ student["Final Exam Marks"] }}
+                        </td>
+
+                        <td class="numeric">
+                            {{ student["Coding Score"] }}
+                        </td>
+
+                        <td class="numeric gap-value">
+                            {{ student["Marks Skills Gap"] }}
+                        </td>
+
+                        <td>
+                            <span class="status">Needs Coding Practice</span>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-message">
+            <strong>No students found.</strong>
+            <p>
+                No students currently match the selected marks and coding criteria.
+            </p>
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- Recommendations -->
+    <section class="analysis-box">
+
+        <h2>What can be done?</h2>
+
+        <ul class="recommendation-list">
+            <li>Give these students regular coding practice.</li>
+            <li>Encourage them to complete small programming projects.</li>
+            <li>Conduct mock coding tests before placement interviews.</li>
+        </ul>
+
+    </section>
+
+</main>
+
+</body>
+</html>

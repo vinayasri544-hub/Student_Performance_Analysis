@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Data</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <style>
+        .filter-box {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .filter-grid input,
+        .filter-grid select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* REFRESH BUTTON */
+
+        .refresh-button {
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: #1f2937;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .refresh-button:hover {
+            background: #374151;
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+            overflow-x: auto;
+        }
+
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .student-table th {
+            background: #1f2937;
+            color: white;
+        }
+
+        .student-table tr:hover {
+            background: #f4f6f8;
+        }
+
+        @media (max-width: 800px) {
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Student Dataset</p>
+</header>
+
+<nav>
+    <a href="/">Dashboard</a>
+    <a href="/analysis">Analysis</a>
+    <a href="/students">Students</a>
+</nav>
+
+<main>
+
+    <h2>Student Records</h2>
+
+    <!-- SEARCH AND FILTERS -->
+
+    <div class="filter-box">
+
+        <div class="filter-grid">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search student..."
+            >
+
+            <select id="genderFilter">
+
+                <option value="">All Gender</option>
+
+                {% for gender in gender_options %}
+
+                    <option value="{{ gender }}">
+                        {{ gender }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <select id="gradeFilter">
+
+                <option value="">All Grades</option>
+
+                {% for grade in grade_options %}
+
+                    <option value="{{ grade }}">
+                        {{ grade }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <select id="attendanceFilter">
+
+                <option value="">All Attendance</option>
+
+                {% for attendance in attendance_options %}
+
+                    <option value="{{ attendance }}">
+                        {{ attendance }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- REFRESH / RESET BUTTON -->
+
+        <button
+            onclick="resetFilters()"
+            class="refresh-button">
+            Refresh / Reset
+        </button>
+
+    </div>
+
+
+    <!-- STUDENT TABLE -->
+
+    <div
+        class="table-container"
+        id="studentTableContainer">
+
+        {{ table|safe }}
+
+    </div>
+
+</main>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const genderFilter =
+        document.getElementById("genderFilter");
+
+    const gradeFilter =
+        document.getElementById("gradeFilter");
+
+    const attendanceFilter =
+        document.getElementById("attendanceFilter");
+
+    const table =
+        document.querySelector(".student-table");
+
+    const rows =
+        table.querySelectorAll("tbody tr");
+
+    const headers =
+        Array.from(
+            table.querySelectorAll("thead th")
+        );
+
+
+    function getColumnIndex(columnName) {
+
+        return headers.findIndex(
+            header =>
+                header.textContent.trim() === columnName
+        );
+
+    }
+
+
+    const genderIndex =
+        getColumnIndex("Gender");
+
+    const gradeIndex =
+        getColumnIndex("grade");
+
+    const attendanceIndex =
+        getColumnIndex("attendance_category");
+
+
+    function filterStudents() {
+
+        const searchText =
+            searchInput.value.toLowerCase();
+
+        const selectedGender =
+            genderFilter.value.toLowerCase();
+
+        const selectedGrade =
+            gradeFilter.value.toLowerCase();
+
+        const selectedAttendance =
+            attendanceFilter.value.toLowerCase();
+
+
+        rows.forEach(function (row) {
+
+            const cells =
+                row.querySelectorAll("td");
+
+            const rowText =
+                row.textContent.toLowerCase();
+
+
+            const gender =
+                genderIndex >= 0
+                    ? cells[genderIndex].textContent
+                        .trim()
+                        .toLowerCase()
+                    : "";
+
+
+            const grade =
+                gradeIndex >= 0
+                    ? cells[gradeIndex].textContent
+                        .trim()
+                        .toLowerCase()
+                    : "";
+
+
+            const attendance =
+                attendanceIndex >= 0
+                    ? cells[attendanceIndex].textContent
+                        .trim()
+                        .toLowerCase()
+                    : "";
+
+
+            const matchesSearch =
+                rowText.includes(searchText);
+
+
+            const matchesGender =
+                !selectedGender ||
+                gender === selectedGender;
+
+
+            const matchesGrade =
+                !selectedGrade ||
+                grade === selectedGrade;
+
+
+            const matchesAttendance =
+                !selectedAttendance ||
+                attendance === selectedAttendance;
+
+
+            if (
+                matchesSearch &&
+                matchesGender &&
+                matchesGrade &&
+                matchesAttendance
+            ) {
+
+                row.style.display = "";
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+    }
+
+
+    searchInput.addEventListener(
+        "input",
+        filterStudents
+    );
+
+
+    genderFilter.addEventListener(
+        "change",
+        filterStudents
+    );
+
+
+    gradeFilter.addEventListener(
+        "change",
+        filterStudents
+    );
+
+
+    attendanceFilter.addEventListener(
+        "change",
+        filterStudents
+    );
+
+
+    /* RESET FILTERS */
+
+    window.resetFilters = function () {
+
+        searchInput.value = "";
+
+        genderFilter.value = "";
+
+        gradeFilter.value = "";
+
+        attendanceFilter.value = "";
+
+
+        rows.forEach(function (row) {
+
+            row.style.display = "";
+
+        });
+
+    };
+
+});
+
+</script>
+
+</body>
+</html>

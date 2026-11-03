@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Career Roadmap Generator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .roadmap-container {
+            margin-left: 220px;
+            padding: 25px;
+        }
+
+        .roadmap-container h2 {
+            color: #243b64;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .roadmap-table {
+            width: 100%;
+            min-width: 1900px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .roadmap-table th,
+        .roadmap-table td {
+            padding: 12px;
+            border: 1px solid #d9e0ea;
+            text-align: left;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .roadmap-table th {
+            background: #243b64;
+            color: white;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+        }
+
+        .roadmap-table tbody tr:nth-child(even) {
+            background: #f3f6fb;
+        }
+
+        .roadmap-table tbody tr:hover {
+            background: #e8f0ff;
+        }
+
+        .skill-label {
+            font-weight: bold;
+            color: #b45309;
+        }
+
+        .role-label {
+            font-weight: bold;
+            color: #167447;
+        }
+
+        .score-label {
+            font-weight: bold;
+            color: #243b64;
+        }
+
+        .week-cell {
+            min-width: 210px;
+            max-width: 280px;
+            white-space: normal;
+        }
+
+        .week-title {
+            display: block;
+            margin-bottom: 8px;
+            color: #243b64;
+            font-weight: bold;
+        }
+
+        .note {
+            background: #eef4ff;
+            border-left: 4px solid #345a91;
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .summary-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            flex: 1;
+            min-width: 180px;
+            background: white;
+            border: 1px solid #d9e0ea;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .summary-item h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0 0 10px;
+        }
+
+        .summary-item p {
+            color: #243b64;
+            font-size: 25px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .roadmap-container {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Machine Learning Performance Prediction</p>
+</header>
+
+<!-- SIDEBAR: SAME STRUCTURE AS COMPANY FIT PAGE -->
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+    <a href="/cleaning">Data Cleaning</a>
+    <a href="/analysis">Analysis</a>
+    <a href="/trends">Trends</a>
+    <a href="/correlation">Correlation</a>
+    <a href="/prediction">Prediction</a>
+    <a href="/at-risk">At-Risk Students</a>
+    <a href="/clustering">Clustering</a>
+    <a href="/students">Students</a>
+    <a href="/technical">Technical Knowledge</a>
+    <a href="/coding-skills">Coding Skills</a>
+    <a href="/placement-preparation">Placement Preparation</a>
+    <a href="/placement-readiness">Placement Readiness Score</a>
+    <a href="/what-if">What-if Simulator</a>
+    <a href="/marks-skills-gap">Marks vs Skills Gap</a>
+    <a href="/skill-gap">Skill Gap Finder</a>
+    <a href="/role-recommender">Role Recommender</a>
+    <a href="/company-fit">Company Fit Matcher</a>
+    <a href="/career-roadmap" class="active">Career Roadmap Generator</a>
+    <a href="/report">Report &amp; Recommendations</a>
+
+</div>
+
+<main class="roadmap-container">
+
+    <h2>Career Roadmap Generator</h2>
+
+    <p>
+        Student-wise career recommendations, weakest skill identification,
+        and a personalized four-week improvement plan.
+    </p>
+
+    <!-- SUMMARY -->
+    <div class="summary-section">
+
+        <div class="summary-item">
+            <h3>Total Students</h3>
+            <p>{{ total_students }}</p>
+        </div>
+
+        <div class="summary-item">
+            <h3>Target Skill Score</h3>
+            <p>70/100</p>
+        </div>
+
+        <div class="summary-item">
+            <h3>Roadmap Duration</h3>
+            <p>4 Weeks</p>
+        </div>
+
+    </div>
+
+    <div class="note">
+        <strong>Important:</strong>
+        Career roles and improvement plans are recommendations based on
+        the available student skill scores. The 70/100 target is an
+        illustrative project target, not a hiring guarantee.
+    </div>
+
+    <!-- CAREER ROADMAP TABLE -->
+    <div class="table-wrapper">
+
+        <table class="roadmap-table">
+
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Register Number</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Coding Score</th>
+                    <th>Aptitude Score</th>
+                    <th>Communication Score</th>
+                    <th>Weakest Skill</th>
+                    <th>Current Skill Score</th>
+                    <th>Recommended Career Role</th>
+                    <th>Week 1</th>
+                    <th>Week 2</th>
+                    <th>Week 3</th>
+                    <th>Week 4</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for student in students %}
+                {% set tasks = student.get('Roadmap', []) %}
+
+                <tr>
+    <td>{{ loop.index }}</td>
+
+    <td>{{ student.get('Student Reg No', '-') }}</td>
+
+    <td>{{ student.get('Student Name', '-') }}</td>
+
+    <td>
+    {{ student.get('Department', student.get('department', student.get('Department Name', '-'))) }}
+</td>
+
+    <td>{{ student.get('Coding Score', 0) }}</td>
+
+    <td>{{ student.get('Aptitude Score', 0) }}</td>
+
+    <td>{{ student.get('Communication Score', 0) }}</td>
+
+    <!-- WEAKEST SKILL -->
+    <td>
+        {% set coding = student.get('Coding Score', 0)|float %}
+        {% set aptitude = student.get('Aptitude Score', 0)|float %}
+        {% set communication = student.get('Communication Score', 0)|float %}
+
+        {% set weakest = student.get('Weakest Skill', '') %}
+
+        {% if weakest and weakest != '-' %}
+            <span class="skill-label">{{ weakest }}</span>
+        {% elif coding <= aptitude and coding <= communication %}
+            <span class="skill-label">Coding</span>
+        {% elif aptitude <= coding and aptitude <= communication %}
+            <span class="skill-label">Aptitude</span>
+        {% else %}
+            <span class="skill-label">Communication</span>
+        {% endif %}
+    </td>
+
+    <!-- CURRENT SKILL SCORE -->
+    <td>
+        {% if weakest and weakest != '-' %}
+            {% if 'coding' in weakest|lower %}
+                <span class="score-label">{{ coding }}/100</span>
+            {% elif 'aptitude' in weakest|lower %}
+                <span class="score-label">{{ aptitude }}/100</span>
+            {% elif 'communication' in weakest|lower %}
+                <span class="score-label">{{ communication }}/100</span>
+            {% else %}
+                <span class="score-label">
+                    C: {{ coding }} | A: {{ aptitude }} | Com: {{ communication }}
+                </span>
+            {% endif %}
+        {% elif coding <= aptitude and coding <= communication %}
+            <span class="score-label">{{ coding }}/100</span>
+        {% elif aptitude <= coding and aptitude <= communication %}
+            <span class="score-label">{{ aptitude }}/100</span>
+        {% else %}
+            <span class="score-label">{{ communication }}/100</span>
+        {% endif %}
+    </td>
+
+    <!-- RECOMMENDED ROLE -->
+    <td>
+        {% set role = student.get('Recommended Role', '') %}
+
+        {% if role and role != '-' %}
+            <span class="role-label">{{ role }}</span>
+        {% elif coding >= aptitude and coding >= communication %}
+            <span class="role-label">Software Developer</span>
+        {% elif aptitude >= coding and aptitude >= communication %}
+            <span class="role-label">Data Analyst</span>
+        {% else %}
+            <span class="role-label">Communication Specialist</span>
+        {% endif %}
+    </td>
+
+    <!-- WEEK 1 -->
+    <td class="week-cell">
+        <span class="week-title">Week 1: Learn</span>
+        {% if tasks|length > 0 %}
+            {{ tasks[0] }}
+        {% else %}
+            Revise the basics of the weakest skill and identify topics
+            that need improvement.
+        {% endif %}
+    </td>
+
+    <!-- WEEK 2 -->
+    <td class="week-cell">
+        <span class="week-title">Week 2: Practise</span>
+        {% if tasks|length > 1 %}
+            {{ tasks[1] }}
+        {% else %}
+            Practise exercises and solve problems related to the weakest skill.
+        {% endif %}
+    </td>
+
+    <!-- WEEK 3 -->
+    <td class="week-cell">
+        <span class="week-title">Week 3: Apply</span>
+        {% if tasks|length > 2 %}
+            {{ tasks[2] }}
+        {% else %}
+            Complete a small practical project using the skills learned.
+        {% endif %}
+    </td>
+
+    <!-- WEEK 4 -->
+    <td class="week-cell">
+        <span class="week-title">Week 4: Evaluate</span>
+        {% if tasks|length > 3 %}
+            {{ tasks[3] }}
+        {% else %}
+            Take a mock assessment, review mistakes, and plan the next
+            improvement steps.
+        {% endif %}
+    </td>
+</tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="14" class="empty-message">
+                        No student records available. Please check the
+                        dataset and Career Roadmap route in main.py.
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <p>
+        <strong>Note:</strong>
+        Actual career suitability depends on projects, practical experience,
+        interviews, and employer-specific requirements in addition to
+        these skill scores.
+    </p>
+
+</main>
+
+<!-- SHARED JAVASCRIPT -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

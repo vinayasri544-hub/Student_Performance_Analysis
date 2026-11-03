@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overall Project Review</title>
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: #f3f6fb;
+        color: #172b4d;
+        font-family: Arial, sans-serif;
+    }
+
+    header {
+        padding: 25px;
+        background: #2f3d54;
+        color: white;
+        text-align: left;
+    }
+
+    header h1 { margin: 0 0 8px; }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px 20px;
+        background: #2f3d54;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        padding: 9px 12px;
+        border-radius: 5px;
+    }
+
+    nav a:hover { background: #2f3d54; }
+
+    main {
+        max-width: 1500px;
+        margin: auto;
+        padding: 24px;
+    }
+
+    .intro, .panel, .metric {
+        background: white;
+        border: 1px solid #e0e7f0;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 3px 12px rgba(20, 40, 70, 0.05);
+    }
+
+    .intro { margin-bottom: 22px; }
+
+    .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .metric { border-top: 4px solid #3478c7; }
+    .metric:nth-child(2) { border-top-color: #26a879; }
+    .metric:nth-child(3) { border-top-color: #8156d9; }
+    .metric:nth-child(4) { border-top-color: #e99535; }
+
+    .metric h3 { font-size: 14px; color: #607086; margin: 0 0 12px; }
+    .metric p { font-size: 29px; font-weight: bold; margin: 0; }
+    .metric small { display: block; margin-top: 8px; color: #718096; }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .panel h2 { margin-top: 0; font-size: 19px; }
+    .chart-container { position: relative; height: 300px; }
+
+    .insight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .insight {
+        padding: 14px;
+        border-radius: 8px;
+        background: #f1f6fc;
+        line-height: 1.6;
+    }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .links a, .action-button {
+        display: inline-block;
+        background: #1e5ca0;
+        color: white;
+        text-decoration: none;
+        border: 0;
+        border-radius: 6px;
+        padding: 11px 15px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .links a:hover, .action-button:hover { background: #164477; }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background: #102b4e;
+        color: white;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 900px) {
+        .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .chart-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 500px) {
+        main { padding: 12px; }
+        .metrics, .insight-grid { grid-template-columns: 1fr; }
+        .metric p { font-size: 25px; }
+    }
+
+    @media print {
+        nav, .action-button, .links { display: none; }
+        body { background: white; }
+        .panel, .metric, .intro { box-shadow: none; break-inside: avoid; }
+    }
+</style>
+
+</head>
+
+<body>
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Overall Project Review | Big Data Analytics and Machine Learning</p>
+</header>
+
+
+
+<main>
+<section class="intro">
+    <h2>Overall Project Review</h2>
+    <p>
+        This report summarizes student academic performance,
+        data quality, assessment results, semester trends,
+        factors associated with CGPA, and students identified
+        for additional academic support.
+    </p>
+    <p><strong>Dataset:</strong> Student Performance Analysis Kaggle Dataset</p>
+    <button class="action-button" onclick="window.print()">Print / Save as PDF</button>
+    <a href="{{ url_for('student_report') }}" class="action-button">Search Individual Student</a>
+
+</section>
+
+<section class="metrics">
+    <div class="metric">
+        <h3>Total Students</h3>
+        <p>{{ total_students }}</p>
+        <small>Records after cleaning</small>
+    </div>
+
+    <div class="metric">
+        <h3>Average Final Marks</h3>
+        <p>{{ average_final_marks }}</p>
+        <small>Out of 100, if marks use that scale</small>
+    </div>
+
+    <div class="metric">
+        <h3>Average CGPA</h3>
+        <p>{{ average_cgpa }}</p>
+        <small>Mean CGPA in the dataset</small>
+    </div>
+
+    <div class="metric">
+        <h3>At-Risk Students</h3>
+        <p>{{ at_risk_count }}</p>
+        <small>Based on the project's defined criteria</small>
+    </div>
+</section>
+
+<section class="chart-grid">
+
+    <div class="panel">
+        <h2>Performance Level Distribution</h2>
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Average Marks by Assessment</h2>
+        <div class="chart-container">
+            <canvas id="marksChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>CGPA Trend by Semester</h2>
+        <div class="chart-container">
+            <canvas id="cgpaChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Final Exam Marks Trend</h2>
+        <div class="chart-container">
+            <canvas id="trendMarksChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Factors Associated with CGPA</h2>
+        <div class="chart-container">
+            <canvas id="correlationChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>Placement Status Distribution</h2>
+        <div class="chart-container">
+            <canvas id="placementChart"></canvas>
+        </div>
+    </div>
+
+</section>
+
+<section class="panel" style="margin-bottom:22px;">
+    <h2>Data Quality Summary</h2>
+
+    <div class="insight-grid">
+        <div class="insight">
+            <strong>Original records</strong><br>
+            {{ original_records }}
+        </div>
+
+        <div class="insight">
+            <strong>Cleaned records</strong><br>
+            {{ cleaned_records }}
+        </div>
+
+        <div class="insight">
+            <strong>Duplicate records removed</strong><br>
+            {{ duplicates_removed }}
+        </div>
+
+        <div class="insight">
+            <strong>Missing values after cleaning</strong><br>
+            {{ missing_values_after }}
+        </div>
+    </div>
+</section>
+
+<section class="panel" style="margin-bottom:22px;">
+    <h2>Machine Learning Evaluation</h2>
+
+    <div class="insight-grid">
+        <div class="insight">
+            <strong>Model</strong><br>
+            Random Forest Regression
+        </div>
+
+        <div class="insight">
+            <strong>Mean Absolute Error (MAE)</strong><br>
+            {{ prediction_mae }}
+        </div>
+
+        <div class="insight">
+            <strong>R² Score</strong><br>
+            {{ prediction_r2 }}
+        </div>
+
+        <div class="insight">
+            <strong>Clustering method</strong><br>
+            K-Means with 3 clusters
+        </div>
+    </div>
+
+    <p>
+        MAE measures the average absolute difference between
+        predicted and actual marks. R² describes model fit on
+        the test data; it is not the same as percentage accuracy.
+    </p>
+</section>
+
+<section class="panel" style="margin-bottom:22px;">
+    <h2>Project Insights</h2>
+
+    <div class="insight-grid">
+        <div class="insight">
+            <strong>Academic performance</strong><br>
+            Average CGPA and final marks summarize overall
+            results across the cleaned dataset.
+        </div>
+
+        <div class="insight">
+            <strong>Performance over time</strong><br>
+            Semester charts help compare average CGPA and
+            final examination marks across recorded periods.
+        </div>
+
+        <div class="insight">
+            <strong>Factors and relationships</strong><br>
+            Correlation values describe linear associations
+            with CGPA. Correlation does not prove causation.
+        </div>
+
+        <div class="insight">
+            <strong>Academic support</strong><br>
+            Students meeting the configured attendance, CGPA,
+            marks, or arrears criteria are listed on the
+            At-Risk Students page for review.
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    Student Performance Analysis | Big Data Analytics Project
+</footer>
+
+<script>
+async function loadReportCharts() {
+    try {
+        const responses = await Promise.all([
+            fetch("/api/analysis"),
+            fetch("/api/trends"),
+            fetch("/api/correlation")
+        ]);
+
+        for (const response of responses) {
+            if (!response.ok) {
+                throw new Error("Unable to load report data.");
+            }
+        }
+
+        const analysisData = await responses[0].json();
+        const trendData = await responses[1].json();
+        const correlationData = await responses[2].json();
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false
+        };
+
+        new Chart(document.getElementById("performanceChart"), {
+            type: "doughnut",
+            data: {
+                labels: analysisData.performance_labels,
+                datasets: [{
+                    label: "Students",
+                    data: analysisData.performance_values
+                }]
+            },
+            options: commonOptions
+        });
+
+        new Chart(document.getElementById("marksChart"), {
+            type: "bar",
+            data: {
+                labels: analysisData.marks_labels,
+                datasets: [{
+                    label: "Average Marks",
+                    data: analysisData.marks_values
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        new Chart(document.getElementById("cgpaChart"), {
+            type: "line",
+            data: {
+                labels: trendData.labels,
+                datasets: [{
+                    label: "Average CGPA",
+                    data: trendData.cgpa,
+                    tension: 0.25
+                }]
+            },
+            options: commonOptions
+        });
+
+        new Chart(document.getElementById("trendMarksChart"), {
+            type: "line",
+            data: {
+                labels: trendData.labels,
+                datasets: [{
+                    label: "Average Final Exam Marks",
+                    data: trendData.final_marks,
+                    tension: 0.25
+                }]
+            },
+            options: commonOptions
+        });
+
+        new Chart(document.getElementById("correlationChart"), {
+            type: "bar",
+            data: {
+                labels: Object.keys(correlationData),
+                datasets: [{
+                    label: "Correlation with CGPA",
+                    data: Object.values(correlationData)
+                }]
+            },
+            options: {
+                ...commonOptions,
+                indexAxis: "y",
+                scales: {
+                    x: { min: -1, max: 1 }
+                }
+            }
+        });
+
+        new Chart(document.getElementById("placementChart"), {
+            type: "pie",
+            data: {
+                labels: analysisData.placement_labels,
+                datasets: [{
+                    label: "Students",
+                    data: analysisData.placement_values
+                }]
+            },
+            options: commonOptions
+        });
+
+    } catch (error) {
+        console.error("Report chart error:", error);
+        document.querySelectorAll(".chart-container").forEach(container => {
+            container.insertAdjacentHTML(
+                "beforeend",
+                '<p style="color:#b42318;">Chart data could not be loaded. Check the Flask API routes.</p>'
+            );
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadReportCharts);
+</script>
+
+</body>
+</html>

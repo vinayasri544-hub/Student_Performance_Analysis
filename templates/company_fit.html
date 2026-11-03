@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Fit & Placement Advisor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .company-container {
+            margin-left: 220px;
+            padding: 25px;
+        }
+
+        .company-container h2 {
+            color: #243b64;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .company-table {
+            width: 100%;
+            min-width: 1900px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .company-table th,
+        .company-table td {
+            padding: 12px;
+            border: 1px solid #d9e0ea;
+            text-align: left;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .company-table th {
+            background: #243b64;
+            color: white;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+        }
+
+        .company-table tbody tr:nth-child(even) {
+            background: #f3f6fb;
+        }
+
+        .company-table tbody tr:hover {
+            background: #e8f0ff;
+        }
+
+        .fit-score {
+            font-weight: bold;
+            color: #167447;
+            text-align: center !important;
+        }
+
+        .status-ready {
+            color: #167447;
+            font-weight: bold;
+        }
+
+        .status-improve {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .recommendation-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .recommendation-list li {
+            margin-bottom: 6px;
+        }
+
+        .note {
+            background: #eef4ff;
+            border-left: 4px solid #345a91;
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .company-container {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Student Performance Analysis</h1>
+    <p>Machine Learning Performance Prediction</p>
+</header>
+
+<div id="sideMenu" class="side-menu">
+
+    <h2>Project Menu</h2>
+
+    <a href="/">Dashboard</a>
+
+    <a href="/cleaning">Data Cleaning</a>
+
+    <a href="/analysis">Analysis</a>
+
+    <a href="/trends">Trends</a>
+
+    <a href="/correlation">Correlation</a>
+
+    <a href="/prediction">Prediction</a>
+
+    <a href="/at-risk">At-Risk Students</a>
+
+    <a href="/clustering">Clustering</a>
+
+    <a href="/students">Students</a>
+
+    <a href="/technical">Technical Knowledge</a>
+    
+    <a href="/coding-skills">Coding Skills</a>
+
+    <a href="/placement-preparation">Placement Preparation</a>
+
+    <a href="/placement-readiness">Placement Readiness Score</a>
+
+    <a href="/what-if">What-if Simulator</a>
+
+    <a href="/marks-skills-gap" class="active">Marks vs Skills Gap</a>
+    
+    <a href="/skill-gap">Skill Gap Finder</a>
+
+    <a href="/role-recommender">Role Recommender</a>
+
+    <a href="/company-fit">Company Fit Matcher</a>
+
+    <a href="/career-roadmap">Career Roadmap Generator</a>
+    
+    <a href="/report">Report & Recommendations</a>
+
+</div>
+
+<main class="company-container">
+
+    <h2>Company Fit & Placement Advisor</h2>
+
+    <p>
+        Student-wise company recommendations, skill gaps and placement
+        improvement plans.
+    </p>
+
+    <h3>Total Students: {{ total_students }}</h3>
+
+    <div class="note">
+        <strong>Important:</strong>
+        Fit scores are estimates based on the student's current skills.
+        They are not actual hiring probabilities or official company
+        eligibility decisions. The 60-point readiness threshold is an
+        illustrative project rule.
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="company-table">
+
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Register Number</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+
+                    <th>Coding Score</th>
+                    <th>Aptitude Score</th>
+                    <th>Communication Score</th>
+
+                    <th>Service Fit (%)</th>
+                    <th>Product Fit (%)</th>
+                    <th>Startup Fit (%)</th>
+                    <th>IT Consulting Fit (%)</th>
+                    <th>Testing / QA Fit (%)</th>
+
+                    <th>Top 5 Company Recommendations</th>
+                    <th>Placement Status</th>
+                    <th>Skills to Improve</th>
+                    <th>Improvement Plan</th>
+                    <th>Future Target Company Types</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for student in students %}
+
+                <tr>
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ student.get('Student Reg No', '-') }}</td>
+                    <td>{{ student.get('Student Name', '-') }}</td>
+                    <td>{{ student.get('Department', '-') }}</td>
+
+                    <td>{{ student.get('Coding Score', '-') }}</td>
+                    <td>{{ student.get('Aptitude Score', '-') }}</td>
+                    <td>{{ student.get('Communication Score', '-') }}</td>
+
+                    <td class="fit-score">
+                        {{ student.get('Service Fit', 0) }}%
+                    </td>
+
+                    <td class="fit-score">
+                        {{ student.get('Product Fit', 0) }}%
+                    </td>
+
+                    <td class="fit-score">
+                        {{ student.get('Startup Fit', 0) }}%
+                    </td>
+
+                    <td class="fit-score">
+                        {{ student.get('IT Consulting Fit', 0) }}%
+                    </td>
+
+                    <td class="fit-score">
+                        {{ student.get('Testing QA Fit', 0) }}%
+                    </td>
+
+                    <td>
+                        <ol class="recommendation-list">
+                            {% for item in student.get('Top Recommendations', []) %}
+                            <li>
+                                <strong>{{ item.company_type }}</strong>
+                                — {{ item.score }}%
+                            </li>
+                            {% else %}
+                            No recommendations available.
+                            {% endfor %}
+                        </ol>
+                    </td>
+
+                    <td>
+                        {% if student.get('Placement Status') == 'Potential Match' %}
+                            <span class="status-ready">
+                                Potential Match
+                            </span>
+                        {% else %}
+                            <span class="status-improve">
+                                Needs Improvement
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% for skill in student.get('Weak Skills', []) %}
+                            <strong>{{ skill.skill }}</strong><br>
+                            Current: {{ skill.current }}/100<br>
+                            Target: {{ skill.target }}/100<br>
+                            Improve by: {{ skill.improvement }} points
+                            <hr>
+                        {% else %}
+                            All measured skills reached the illustrative
+                            70/100 target.
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        {{ student.get('Improvement Plan', '-') }}
+                    </td>
+
+                    <td>
+                        {% for target in student.get('Future Target Companies', []) %}
+                            {{ loop.index }}. {{ target }}<br>
+                        {% else %}
+                            Reassess after improving skills.
+                        {% endfor %}
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="17">
+                        No student records available. Please check the
+                        dataset and required skill columns.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <p>
+        <strong>Note:</strong>
+        Actual placement depends on company-specific eligibility criteria,
+        interviews, projects and other requirements.
+    </p>
+
+</main>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
